@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <math.h>
+#include <malloc.h>
+int* convert(int *sz, int a)
+{
+    int *ptr;
+    int p = 2147483647;
+    int w = 8;
+    int t;
+    int lega = pow(2,w);
+    int m = log(p)/log(2);
+    if(m % w == 0) t = m/w;
+    else t = m/w + 1;
+    *sz = t;
+    ptr = (int*)malloc(t*sizeof(int));
+    for(int i = 0; i < t; ++i)
+    {
+        *(ptr + i) = a % lega;
+        a /= lega;
+    }
+    return ptr;
+}
+void show(int *ptr, int sz)
+{
+    for(int i = sz - 1; i >= 0; --i)
+    {
+        printf("%d ; ",*(ptr + i));
+    }
+}
+
+int* mulab(int *ptra,int *ptrb, int sza,int szb)
+{
+    int w = 8;
+    int lega = pow(2,w);
+    int *ptr;
+    int szc = sza + szb;
+    ptr = (int*)malloc((sza + szb) * sizeof(int));
+    for(int i = 0; i < sza; ++i)
+        *(ptr + i) = 0;
+    int u,v;
+    int results;
+    for(int i = 0; i < sza; ++i)
+    {
+        u = 0;
+        for(int j = 0; j < sza; ++j)
+        {
+            results = *(ptr + i + j) + *(ptra + i) * *(ptrb + j) + u;
+            u = results / lega;
+            v = results % lega;
+            *(ptr + i + j) = v;
+        }
+        *(ptr + i + szc) = u;
+    }
+    return ptr;
+}
+int main()
+{
+    int a = 524647,b=32549;
+    int sza,szb;
+    int *ptra = convert(&sza,a);
+    int *ptrb = convert(&szb,b);
+    printf("A = "); show(ptra,sza);
+    printf("\nB = "); show(ptrb,szb);
+    int *ptrc = mulab(ptra,ptrb,sza,szb);
+    printf("\nC = A * B = ");
+    show(ptrc,sza+szb);
+    return 0;
+}
